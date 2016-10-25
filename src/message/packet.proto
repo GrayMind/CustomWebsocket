@@ -1,0 +1,9 @@
+
+message Packet {
+    //协议类型(10 握手 11 心跳 40 IM)
+    required int32 protocol = 1;
+    //加密类型(0明文 1RSA 2AES)
+    required int32 security = 2;
+    required string clientId = 3;
+    required bytes content = 4;
+}

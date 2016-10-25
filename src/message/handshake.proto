@@ -1,0 +1,30 @@
+
+enum Network {
+    //无法识别网络
+    N_ERR = 1;
+    //WIFI网络
+    N_WIFI = 2;
+    //2G网
+    N_2G = 3;
+    //3G网
+    N_3G = 4;
+    //4G网
+    N_4G = 5;
+}
+
+message HandShakeRequest {
+    //客户端版本
+    required string client_version = 1;
+    //网络
+    required Network network = 2;
+    //安全密钥
+    required string secret_key = 3;
+}
+
+message HandShakeResponse {
+    //握手成功与否
+    required bool result = 1;
+
+    //原因（result=true，这个字段没有值。result=false，这个字段可能会传）
+    optional string error = 2;
+}

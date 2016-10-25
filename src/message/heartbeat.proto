@@ -1,0 +1,10 @@
+
+//----------------请求应答
+//客户端发起心跳
+message PingRequest {
+    required string ping = 1;
+}
+
+message PingResponse {
+    required string pong = 1;
+}

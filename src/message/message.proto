@@ -1,0 +1,88 @@
+
+enum Protocol {
+    request = 1;
+    response = 2;
+    notify = 3;
+    notifyAck = 4;
+    notifyAckAck = 5;
+    requestAck = 6;
+}
+
+
+message IMessage {
+    required int32 version = 1;
+    optional string fromClientId = 2;
+    optional string toClientId = 3;
+    //1,2,3,4,5,6
+    required int32 protocol = 4;
+    required bytes content = 5;
+}
+
+//客户端消息发送 msgType=1
+message MessageRequest {
+    //客户端生成的id
+    required int64 msgId = 1;
+    //会话类型 10单聊 11群聊 12客服
+    optional int32 sessionType = 2;
+    optional string from = 3;
+    optional string to = 4;
+    //消息类型 10 文字 11图片 12 图文 13 语音 14 视频 15 位置
+    required int32 contentType = 5;
+    required string content = 6;
+}
+
+//IM server确认消息收到 msgType=2
+message MessageResponse {
+    required int64 msgId = 1;
+    //服务端消息id,全局唯一
+    required string msgUid = 2;
+    required int64 ts = 3;
+}
+
+//IM Server通知Client B msgType=3
+message MessageNotify {
+    required int64 msgId = 1;
+    //会话类型 10单聊 11群聊 12客服
+    optional int32 sessionType = 2;
+    required string msgUid = 3;
+    optional string from = 4;
+    //消息类型 10 文字 11图片 12 图文 13 语音 14 视频 15 位置
+    required int32 contentType = 5;
+    required string content = 6;
+    required int64 ts = 7;
+}
+
+//B 确认收到 msgType=4
+message MessageNotifyAck {
+    required int64 msgId = 1;
+    required string msgUid = 2;
+}
+
+// IM Server 确认收到MessageNotifyAck msgType=5
+message MessageNotifyAckAck {
+    required int64 msgId = 1;
+    required string msgUid = 2;
+}
+
+// IM Server通知A,B已确认收到消息 msgType=6
+message MessageRequestAck {
+    required int64 msgId = 1;
+    required string msgUid = 2;
+}
+
+//------------- 客服online status msgType=20
+message KeFuOnlineStatusRequest {
+    required string fromeUser = 1;
+    //1.online,2.away,3.offline
+    required string status = 2;
+}
+
+message KeFuOnlineStatusResponse {
+    //1.online,2.away,3.offline
+    required string status = 1;
+    required int32 respCode = 2;
+}
+
+message KickNotify {
+    required int32 action = 1;
+}
