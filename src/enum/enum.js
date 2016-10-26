@@ -66,9 +66,13 @@ export const IMMessageProtocol = {
     REQUESTACK: 6,
 
     /**
-     * 客服online status
+     * 客服online status REQUEST
      */
-    ONLINE_STATUS: 20,
+    ONLINE_STATUS_REQUEST: 20,
+    /**
+     * 客服online status RESPONSE
+     */
+    ONLINE_STATUS_RESPONSE: 20,
 };
 
 export const SessionType = {
