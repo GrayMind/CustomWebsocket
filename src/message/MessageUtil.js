@@ -43,14 +43,14 @@ var KeFuOnlineStatusRequest = MessageProto.build("KeFuOnlineStatusRequest");
 var KeFuOnlineStatusResponse = MessageProto.build("KeFuOnlineStatusResponse");
 var KickNotify = MessageProto.build("KickNotify");
 
-function MessageUtil() {
-    this.clientId = "";
+function MessageUtil(clientId) {
+    this.clientId = clientId;
     this.version = 1;
 }
 
-MessageUtil.prototype.init = function (clientId) {
-    this.clientId = clientId;
-};
+// MessageUtil.prototype.init = function (clientId) {
+//     this.clientId = clientId;
+// };
 
 // 生成文本消息 1
 MessageUtil.prototype.buildTextMessage = function (targetId, sessionId, text) {

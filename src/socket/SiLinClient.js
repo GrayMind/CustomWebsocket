@@ -8,16 +8,21 @@ import EventEmitter from "events";
 import { PacketProtocol, NetworkStatus, IMMessageProtocol, SessionType, MessageType, OnlineStatus, MessageDirection, MessageSentStatus, ConnectionStatus } from "../enum/enmu";
 
 
-function SiLinClient() {
+function SiLinClient(address) {
     if (this instanceof SiLinWebSocket === false) {
       return new SiLinClient();
     }
     EventEmitter.call(this);
 
-    this.messageUtil = new MessageUtil();
-    this.messageUtil.init('clientId');
+    this.messageUtil = new MessageUtil('clientId');
+    // this.messageUtil.init('clientId');
 
-    var socket = new ReconnectingWebSocket(address, protocols, options);
+    var socket = new ReconnectingWebSocket(address, null, {
+        debug: true,
+        reconnectInterval: 3000,
+        binaryType: "arraybuffer",
+        maxReconnectAttempts: 3
+    });
     /*
         连接成功
         发送握手请求
