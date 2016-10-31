@@ -16,7 +16,7 @@ export const PacketProtocol = {
     IM: 40
 };
 
-export const Network = {
+export const NetworkStatus = {
     /**
      * 无法识别网络
      */
@@ -72,7 +72,7 @@ export const IMMessageProtocol = {
     /**
      * 客服online status RESPONSE
      */
-    ONLINE_STATUS_RESPONSE: 20,
+    ONLINE_STATUS_RESPONSE: 21,
 };
 
 export const SessionType = {

@@ -3,8 +3,8 @@
 // var dcodeIO = require("../lib/ProtoBuf.min");
 import dcodeIO from "../lib/ProtoBuf.min";
 // var MessageEnum = require("../enum/enmu");
-import * as  MessageEnum from "../enum/enmu";
-
+import { PacketProtocol, NetworkStatus, IMMessageProtocol, SessionType, MessageType, OnlineStatus, MessageDirection, MessageSentStatus, ConnectionStatus } from "../enum/enmu";
+// MessageEnum
 // Initialize ProtoBuf.js
 var ProtoBuf = dcodeIO.ProtoBuf;
 
@@ -43,7 +43,151 @@ var KeFuOnlineStatusRequest = MessageProto.build("KeFuOnlineStatusRequest");
 var KeFuOnlineStatusResponse = MessageProto.build("KeFuOnlineStatusResponse");
 var KickNotify = MessageProto.build("KickNotify");
 
-function MessageUtil() {}
+function MessageUtil() {
+    this.clientId = "";
+    this.version = 1;
+}
+
+MessageUtil.prototype.init = function (clientId) {
+    this.clientId = clientId;
+};
+
+// 生成文本消息 1
+MessageUtil.prototype.buildTextMessage = function (targetId, sessionId, text) {
+    if (this.clientId.length === 0) {
+        console.log("请调用 MessageUtil.init(clientId) 进行初始化");
+        return null;
+    }
+
+    var messageId = this.createMessageId();
+    var msgReq = {
+        msgId: messageId,
+        sessionType: SessionType.CUSTOMER_SERVICE,
+        from: this.clientId,
+        to: targetId,
+        contentType: MessageType.TEXT_MESSAGE,
+        content: text
+    };
+    var iMessage = {
+        version: this.version,
+        fromClientId: this.clientId,
+        toClientId: targetId,
+        protocol: IMMessageProtocol.REQUEST,
+        content: msgReq
+    };
+    var packet = {
+        protocol: PacketProtocol.IM,
+        security: 0,
+        clientId: this.clientId,
+        content: iMessage
+    };
+
+    return packet;
+};
+// 生成图片消息 1
+
+// 生成 4号消息
+MessageUtil.prototype.buildMessageNotifyAck = function (targetId, msgUid, msgId) {
+    if (this.clientId.length === 0) {
+        console.log("请调用 MessageUtil.init(clientId) 进行初始化");
+        return null;
+    }
+
+    var messageNotifyAck = {
+        msgUid: msgUid,
+        msgId: msgId,
+    };
+    var iMessage = {
+        version: this.version,
+        fromClientId: this.clientId,
+        toClientId: targetId,
+        protocol: IMMessageProtocol.NOTIFYACK,
+        content: messageNotifyAck
+    };
+    var packet = {
+        protocol: PacketProtocol.IM,
+        security: 0,
+        clientId: this.clientId,
+        content: iMessage
+    };
+
+    return packet;
+};
+
+// 生成握手消息
+MessageUtil.prototype.buildHandShakeMessage = function () {
+    if (this.clientId.length === 0) {
+        console.log("请调用 MessageUtil.init(clientId) 进行初始化");
+        return null;
+    }
+    var handshake = {
+        client_version: this.clientId,
+        network: NetworkStatus.N_WIFI,
+        secret_key: '12'
+    };
+    var packet = {
+        protocol: PacketProtocol.HAND_SHAKE,
+        security: 0,
+        clientId: this.clientId,
+        content: handshake
+    };
+    return packet;
+};
+
+// 生成客服online消息
+MessageUtil.prototype.buildOnlineStatusMessage = function (targetId, fromeUser, status) {
+    if (this.clientId.length === 0) {
+        console.log("请调用 MessageUtil.init(clientId) 进行初始化");
+        return null;
+    }
+
+    var onlineStatusRequest = {
+        fromeUser: 'ping',
+        status: status
+    };
+
+    var iMessage = {
+        version: this.version,
+        fromClientId: this.clientId,
+        toClientId: targetId,
+        protocol: IMMessageProtocol.ONLINE_STATUS_REQUEST,
+        content: onlineStatusRequest
+    };
+    var packet = {
+        protocol: PacketProtocol.IM,
+        security: 0,
+        clientId: this.clientId,
+        content: iMessage
+    };
+
+    return packet;
+};
+
+// 生成心跳消息
+MessageUtil.prototype.buildPingRequestMessage = function () {
+    if (this.clientId.length === 0) {
+        console.log("请调用 MessageUtil.init(clientId) 进行初始化");
+        return null;
+    }
+    var pingRequest = {
+        ping: 'ping'
+    };
+    var packet = {
+        protocol: PacketProtocol.HEART_BEAT,
+        security: 0,
+        clientId: this.clientId,
+        content: pingRequest
+    };
+    return packet;
+};
+
+
+MessageUtil.prototype.createMessageId = function () {
+    var now = new Date().getTime();
+    now = now.toString().substr(4) + Math.floor(Math.random() * (9999 - 1000) + 1000).toString();
+    console.log('生成messageId ' + parseInt(now));
+    return parseInt(now);
+};
 
 // 发送的 encode 一下
 MessageUtil.prototype.encodeMessage = function (message) {
@@ -54,7 +198,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
     packet.clientId = message.clientId;
 
     var packetContent = message.content;
-    if (message.protocol == MessageEnum.PacketProtocol.IM) {
+    if (message.protocol == PacketProtocol.IM) {
         var iMessage = {};
         iMessage.version = packetContent.version;
         iMessage.fromClientId = packetContent.fromClientId;
@@ -63,7 +207,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
         var messageContent = packetContent.content;
 
-        if (packetContent.protocol == MessageEnum.IMMessageProtocol.REQUEST) {
+        if (packetContent.protocol ==  IMMessageProtocol.REQUEST) {
             var messageReq = {};
             messageReq.msgId = messageContent.msgId;
             messageReq.sessionType = messageContent.sessionType;
@@ -76,7 +220,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
             packet.content = new IMessage(iMessage).encode().toArrayBuffer();
 
-        } else if (packetContent.protocol == MessageEnum.IMMessageProtocol.RESPONSE) {
+        } else if (packetContent.protocol ==  IMMessageProtocol.RESPONSE) {
 
             var messageRes = {};
             messageRes.msgId = messageContent.msgId;
@@ -87,7 +231,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
             packet.content = new IMessage(iMessage).encode().toArrayBuffer();
 
-        } else if (packetContent.protocol == MessageEnum.IMMessageProtocol.NOTIFY) {
+        } else if (packetContent.protocol ==  IMMessageProtocol.NOTIFY) {
 
             var messageNotify = {};
             messageNotify.msgId = messageContent.msgId;
@@ -102,7 +246,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
             packet.content = new IMessage(iMessage).encode().toArrayBuffer();
 
-        } else if (packetContent.protocol == MessageEnum.IMMessageProtocol.NOTIFYACK) {
+        } else if (packetContent.protocol ==  IMMessageProtocol.NOTIFYACK) {
             var messageNotifyAck = {};
             messageNotifyAck.msgId = messageContent.msgId;
             messageNotifyAck.msgUid = messageContent.msgUid;
@@ -111,7 +255,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
             packet.content = new IMessage(iMessage).encode().toArrayBuffer();
 
-        } else if (packetContent.protocol == MessageEnum.IMMessageProtocol.NOTIFYACKACK) {
+        } else if (packetContent.protocol ==  IMMessageProtocol.NOTIFYACKACK) {
             var messageNotifyAckAck = {};
             messageNotifyAckAck.msgId = messageContent.msgId;
             messageNotifyAckAck.msgUid = messageContent.msgUid;
@@ -120,7 +264,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
             packet.content = new IMessage(iMessage).encode().toArrayBuffer();
 
-        } else if (packetContent.protocol == MessageEnum.IMMessageProtocol.REQUESTACK) {
+        } else if (packetContent.protocol ==  IMMessageProtocol.REQUESTACK) {
             var messageReqAck = {};
             messageReqAck.msgId = messageContent.msgId;
             messageReqAck.msgUid = messageContent.msgUid;
@@ -129,7 +273,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
             packet.content = new IMessage(iMessage).encode().toArrayBuffer();
 
-        } else if (packetContent.protocol == MessageEnum.IMMessageProtocol.ONLINE_STATUS_REQUEST) {
+        } else if (packetContent.protocol ==  IMMessageProtocol.ONLINE_STATUS_REQUEST) {
             var onlineReq = {};
             onlineReq.fromeUser = onlineReq.fromeUser;
             onlineReq.status = onlineReq.status;
@@ -138,7 +282,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
             packet.content = new IMessage(iMessage).encode().toArrayBuffer();
 
-        } else if (packetContent.protocol == MessageEnum.IMMessageProtocol.ONLINE_STATUS_RESPONSE) {
+        } else if (packetContent.protocol ==  IMMessageProtocol.ONLINE_STATUS_RESPONSE) {
             var onlineRes = {};
             onlineRes.respCode = onlineRes.respCode;
             onlineRes.status = onlineRes.status;
@@ -149,7 +293,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
 
         }
     }
-    else if (message.protocol == MessageEnum.PacketProtocol.HAND_SHAKE) {
+    else if (message.protocol ==  PacketProtocol.HAND_SHAKE) {
         var handshake = new HandShakeRequest({
             client_version: '1',
             network: 2,
@@ -157,7 +301,7 @@ MessageUtil.prototype.encodeMessage = function (message) {
         });
         packet.content = handshake.encode().toArrayBuffer();
     }
-    else if (message.protocol == MessageEnum.PacketProtocol.HEART_BEAT) {
+    else if (message.protocol ==  PacketProtocol.HEART_BEAT) {
         var pingRequest = new PingRequest({
             ping: 'ping'
         });
@@ -173,39 +317,39 @@ MessageUtil.prototype.decodeMessage = function (messageData) {
     var protocol = packet.protocol;
     var content;
 
-    if (protocol == MessageEnum.PacketProtocol.IM) {
+    if (protocol ==  PacketProtocol.IM) {
         var messageContent = IMessage.decode(packet.content);
         var messageProtocol = messageContent.protocol;
 
-        if (messageProtocol == MessageEnum.IMMessageProtocol.RESPONSE) {
+        if (messageProtocol ==  IMMessageProtocol.RESPONSE) {
             content = MessageResponse.decode(messageContent.content);
             messageContent.content = content;
 
         }
-        else if (messageProtocol == MessageEnum.IMMessageProtocol.NOTIFY) {
+        else if (messageProtocol ==  IMMessageProtocol.NOTIFY) {
             content = MessageNotify.decode(messageContent.content);
             messageContent.content = content;
 
         }
-        else if (messageProtocol == MessageEnum.IMMessageProtocol.NOTIFYACKACK) {
+        else if (messageProtocol ==  IMMessageProtocol.NOTIFYACKACK) {
             content = MessageNotifyAckAck.decode(messageContent.content);
             messageContent.content = content;
         }
-        else if (messageProtocol == MessageEnum.IMMessageProtocol.REQUESTACK) {
+        else if (messageProtocol ==  IMMessageProtocol.REQUESTACK) {
             content = MessageRequestAck.decode(messageContent.content);
             messageContent.content = content;
         }
-        else if (messageProtocol == MessageEnum.IMMessageProtocol.ONLINE_STATUS_RESPONSE) {
+        else if (messageProtocol ==  IMMessageProtocol.ONLINE_STATUS_RESPONSE) {
             content = MessageResponse.decode(messageContent.content);
             messageContent.content = content;
         }
         packet.content = messageContent;
     }
-    else if (protocol == MessageEnum.PacketProtocol.HAND_SHAKE) {
+    else if (protocol ==  PacketProtocol.HAND_SHAKE) {
         content = HandShakeResponse.decode(packet.content);
         packet.content = content;
     }
-    else if (protocol == MessageEnum.PacketProtocol.HEART_BEAT) {
+    else if (protocol ==  PacketProtocol.HEART_BEAT) {
         content= HeartbeatProto .decode(packet.content);
         packet.content = content;
     }
