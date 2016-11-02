@@ -16,34 +16,38 @@ function SiLinClient(address) {
 
     this.messageUtil = new MessageUtil('clientId');
     // this.messageUtil.init('clientId');
-
-    var socket = new ReconnectingWebSocket(address, null, {
-        debug: true,
-        reconnectInterval: 3000,
-        binaryType: "arraybuffer",
-        maxReconnectAttempts: 3
-    });
-    /*
-        连接成功
-        发送握手请求
-        心跳开始计时
-    */
-    socket.onopen = function() {
-        this.emit('connectionStatus', ConnectionStatus.CONNECTED);
-    };
-    socket.onclose = function() {
-        this.emit('connectionStatus', ConnectionStatus.DISCONNECTED);
-    };
-    socket.onmessage = function(evt) {
-        var message = this.messageUtil.decodeMessage(evt.data);
-
-        this.emit('receive', evt.data);
-    };
-    socket.onerror = function(evt) {
-        this.emit('error', evt);
-    };
-
-    this.socket = socket;
+    // 
+    // var socket = new ReconnectingWebSocket(address, null, {
+    //     debug: true,
+    //     reconnectInterval: 3000,
+    //     binaryType: "arraybuffer",
+    //     maxReconnectAttempts: 3
+    // });
+    // /*
+    //     连接成功
+    //     发送握手请求
+    //     心跳开始计时
+    // */
+    // socket.onopen = function() {
+    //     this.emit('connectionStatus', ConnectionStatus.CONNECTED);
+    // };
+    // socket.onclose = function() {
+    //     this.emit('connectionStatus', ConnectionStatus.DISCONNECTED);
+    // };
+    // socket.onmessage = function(evt) {
+    //     var message = this.messageUtil.decodeMessage(evt.data);
+    //
+    //     if (true) {
+    //
+    //     }
+    //
+    //     this.emit('receive', message);
+    // };
+    // socket.onerror = function(evt) {
+    //     this.emit('error', evt);
+    // };
+    //
+    // this.socket = socket;
 }
 
 util.inherits(SiLinWebSocket, EventEmitter);

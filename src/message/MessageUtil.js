@@ -53,7 +53,7 @@ function MessageUtil(clientId) {
 // };
 
 // 生成文本消息 1
-MessageUtil.prototype.buildTextMessage = function (targetId, sessionId, text) {
+MessageUtil.prototype.buildTextMessage = function (targetId, text) {
     if (this.clientId.length === 0) {
         console.log("请调用 MessageUtil.init(clientId) 进行初始化");
         return null;
