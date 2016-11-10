@@ -1,12 +1,26 @@
 /* jslint esversion: 6 */
 
-// var dcodeIO = require("../lib/ProtoBuf.min");
-import dcodeIO from "../lib/ProtoBuf.min";
-// var MessageEnum = require("../enum/enmu");
-import { PacketProtocol, NetworkStatus, IMMessageProtocol, SessionType, MessageType, OnlineStatus, MessageDirection, MessageSentStatus, ConnectionStatus } from "../enum/enmu";
+// import dcodeIO from "../lib/ProtoBuf.min";
+// import { PacketProtocol, NetworkStatus, IMMessageProtocol, SessionType, MessageType, OnlineStatus, MessageDirection, MessageSentStatus, ConnectionStatus } from "../enum/enmu";
+
+var dcodeIO = require('../lib/ProtoBuf.min');
+var messageEnum = require('../enum/enum.js');
+var PacketProtocol = messageEnum.PacketProtocol,
+    NetworkStatus = messageEnum.NetworkStatus,
+    IMMessageProtocol = messageEnum.IMMessageProtocol,
+    SessionType = messageEnum.SessionType,
+    MessageType = messageEnum.MessageType,
+    OnlineStatus = messageEnum.OnlineStatus,
+    MessageDirection = messageEnum.MessageDirection,
+    MessageSentStatus = messageEnum.MessageSentStatus,
+    ConnectionStatus = messageEnum.ConnectionStatus;
+
+
 // MessageEnum
 // Initialize ProtoBuf.js
-var ProtoBuf = dcodeIO.ProtoBuf;
+// var ProtoBuf = dcodeIO.ProtoBuf;
+
+var ProtoBuf = require("protobufjs");
 
 var Packet = ProtoBuf.loadProtoFile("./packet.proto").build("Packet");
 //握手

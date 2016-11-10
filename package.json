@@ -1,0 +1,24 @@
+{
+  "name": "websocket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "browserify ./src/socket/SiLinClient.js > ./lib/SiLinClient.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GrayMind/CustomWebsocket.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GrayMind/CustomWebsocket/issues"
+  },
+  "homepage": "https://github.com/GrayMind/CustomWebsocket#readme",
+  "dependencies": {
+    "bytebuffer": "^5.0.1",
+    "protobufjs": "dcodeIO/protobuf.js"
+  }
+}

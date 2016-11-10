@@ -1,7 +1,7 @@
 /* jslint esversion: 6 */
 
 //协议类型(10 握手 11 心跳 40 IM)
-export const PacketProtocol = {
+var PacketProtocol = {
     /**
      * 握手
      */
@@ -15,8 +15,9 @@ export const PacketProtocol = {
      */
     IM: 40
 };
+exports.PacketProtocol = PacketProtocol;
 
-export const NetworkStatus = {
+var NetworkStatus = {
     /**
      * 无法识别网络
      */
@@ -38,8 +39,9 @@ export const NetworkStatus = {
      */
     N_4G: 5,
 };
+exports.NetworkStatus = NetworkStatus;
 
-export const IMMessageProtocol = {
+var IMMessageProtocol = {
     /**
      * A发送消息给服务器。
      */
@@ -74,8 +76,9 @@ export const IMMessageProtocol = {
      */
     ONLINE_STATUS_RESPONSE: 21,
 };
+exports.IMMessageProtocol = IMMessageProtocol;
 
-export const SessionType = {
+var SessionType = {
     /**
      * 客服。
      */
@@ -89,9 +92,10 @@ export const SessionType = {
      */
     PRIVATE: 10
 };
+exports.SessionType = SessionType;
 
 // 10 文字 11图片 12 图文 13 语音 14 视频 15 位置
-export const MessageType = {
+var MessageType = {
     TEXT_MESSAGE: 10,
     IMAGE_MESSAGE: 11,
     RICHCONTETN_MESSAGE: 12,
@@ -99,15 +103,17 @@ export const MessageType = {
     VIDEO_MESSAGE: 14,
     LOCATION_MESSAGE: 15
 };
+exports.MessageType = MessageType;
 
 //1.online,2.away,3.offline
-export const OnlineStatus = {
+var OnlineStatus = {
     ONLINE : 1,
     AWAY: 2,
     OFFLINE: 3
 };
+exports.OnlineStatus = OnlineStatus;
 
-export const MessageDirection = {
+var MessageDirection = {
     /**
      * 发送消息。
      */
@@ -117,8 +123,9 @@ export const MessageDirection = {
      */
     RECEIVE: 2
 };
+exports.MessageDirection = MessageDirection;
 
-export const MessageSentStatus = {
+var MessageSentStatus = {
     /**
      * 发送中。
      */
@@ -149,8 +156,9 @@ export const MessageSentStatus = {
      */
     DESTROYED: 60
 };
+exports.MessageSentStatus = MessageSentStatus;
 
-export const ConnectionStatus = {
+var ConnectionStatus = {
     /**
      * 连接成功。
      */
@@ -185,3 +193,4 @@ export const ConnectionStatus = {
     */
     CONNECTION_CLOSED : 4
 };
+exports.ConnectionStatus = ConnectionStatus;

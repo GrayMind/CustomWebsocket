@@ -1,53 +1,35 @@
 /* jslint esversion: 6 */
 
-import ReconnectingWebSocket from "../lib/reconnectingWebSocket";
-import MessageUtil from "../message/MessageUtil";
-import util from "util";
-import EventEmitter from "events";
+// import MessageUtil from "../message/MessageUtil";
+// import MessageHandle from "../message/MessageHandle";
+// import util from "util";
+// import EventEmitter from "events";
 
-import { PacketProtocol, NetworkStatus, IMMessageProtocol, SessionType, MessageType, OnlineStatus, MessageDirection, MessageSentStatus, ConnectionStatus } from "../enum/enmu";
+// import { PacketProtocol, NetworkStatus, IMMessageProtocol, SessionType, MessageType, OnlineStatus, MessageDirection, MessageSentStatus, ConnectionStatus } from "../enum/enmu";
 
+var util = require('util');
+var EventEmitter = require('events');
+var MessageUtil = require('../message/MessageUtil.js');
+var MessageHandle = require('../message/MessageHandle.js');
+
+var messageEnum = require('../enum/enum.js');
+var PacketProtocol = messageEnum.PacketProtocol,
+    NetworkStatus = messageEnum.NetworkStatus,
+    IMMessageProtocol = messageEnum.IMMessageProtocol,
+    SessionType = messageEnum.SessionType,
+    MessageType = messageEnum.MessageType,
+    OnlineStatus = messageEnum.OnlineStatus,
+    MessageDirection = messageEnum.MessageDirection,
+    MessageSentStatus = messageEnum.MessageSentStatus,
+    ConnectionStatus = messageEnum.ConnectionStatus;
 
 function SiLinClient(address) {
     if (this instanceof SiLinWebSocket === false) {
       return new SiLinClient();
     }
     EventEmitter.call(this);
-
-    this.messageUtil = new MessageUtil('clientId');
-    // this.messageUtil.init('clientId');
-    // 
-    // var socket = new ReconnectingWebSocket(address, null, {
-    //     debug: true,
-    //     reconnectInterval: 3000,
-    //     binaryType: "arraybuffer",
-    //     maxReconnectAttempts: 3
-    // });
-    // /*
-    //     连接成功
-    //     发送握手请求
-    //     心跳开始计时
-    // */
-    // socket.onopen = function() {
-    //     this.emit('connectionStatus', ConnectionStatus.CONNECTED);
-    // };
-    // socket.onclose = function() {
-    //     this.emit('connectionStatus', ConnectionStatus.DISCONNECTED);
-    // };
-    // socket.onmessage = function(evt) {
-    //     var message = this.messageUtil.decodeMessage(evt.data);
-    //
-    //     if (true) {
-    //
-    //     }
-    //
-    //     this.emit('receive', message);
-    // };
-    // socket.onerror = function(evt) {
-    //     this.emit('error', evt);
-    // };
-    //
-    // this.socket = socket;
+    // this.messageUtil = new MessageUtil('clientId');
+    this.messageHandle = new MessageHandle(address, '123456');
 }
 
 util.inherits(SiLinWebSocket, EventEmitter);
@@ -62,18 +44,24 @@ SiLinClient.prototype.connect = function () {
 
 };
 
-// // 监听连接状态改变
-// SiLinClient.prototype.setConnectionStatusListener = function () {
-//
-// };
-//
-// // 监听消息接受
-// SiLinClient.prototype.setOnReceiveMessageListener = function () {
-//
-// };
+// 监听连接状态改变
+SiLinClient.prototype.setConnectionStatusListener = function (listener) {
+    this.messageHandle.on('connectionStatus', function(status) {
+        console.log('connectionStatus ' + status);
+        listener.onChanged(status);
+    });
+};
+
+// 监听消息接受
+SiLinClient.prototype.setOnReceiveMessageListener = function (listener) {
+    this.messageHandle.on('receive', function(message) {
+        console.log('receive ' + message);
+        listener.onReceive(message);
+    });
+};
 
 // 发送消息
-SiLinClient.prototype.sendMessage = function () {
+SiLinClient.prototype.sendMessage = function (message, callback) {
 
 };
 
@@ -91,8 +79,5 @@ SiLinClient.prototype.getHistoryMessages = function () {
 SiLinClient.prototype.getSecessionList = function () {
 
 };
-
-
-
 
 medule.exports = SiLinClient;

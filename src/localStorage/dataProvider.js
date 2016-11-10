@@ -20,7 +20,7 @@ var DataProvider = function (){
 
 // 保存消息
 DataProvider.prototype.saveMessage = function (message) {
-
+    // message
 };
 
 // 获取当前对话session列表
