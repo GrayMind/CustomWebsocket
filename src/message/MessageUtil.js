@@ -40,14 +40,14 @@
     var HandShakeResponse = HandShakeProto.build("HandShakeResponse");
 
     // 心跳
-    var HeartbeatProto = ProtoBuf.loadProtoFile("resource/heartbeat.proto");
+    var HeartbeatProto = ProtoBuf.loadProtoFile("/resource/heartbeat.proto");
     // 心跳回应
     var PingResponse = HeartbeatProto.build("PingResponse");
     // 心跳请求
     var PingRequest = HeartbeatProto.build("PingRequest");
 
     // IM 消息
-    var MessageProto = ProtoBuf.loadProtoFile("resource/message.proto");
+    var MessageProto = ProtoBuf.loadProtoFile("/resource/message.proto");
     var IMessage = MessageProto.build("IMessage");
 
     // A发送消息给服务器 1 40
@@ -202,7 +202,7 @@
         return packet;
     };
 
-
+    // 创建messageId
     MessageUtil.prototype.createMessageId = function () {
         var now = new Date().getTime();
         now = now.toString().substr(4) + Math.floor(Math.random() * (9999 - 1000) + 1000).toString();
@@ -371,7 +371,7 @@
             packet.content = content;
         }
         else if (protocol ==  PacketProtocol.HEART_BEAT) {
-            content= HeartbeatProto .decode(packet.content);
+            content = PingResponse.decode(packet.content);
             packet.content = content;
         }
         return packet;

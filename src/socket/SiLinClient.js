@@ -37,9 +37,9 @@
         ConnectionStatus = messageEnum.ConnectionStatus;
 
     function SiLinClient(address) {
-        if (this instanceof SiLinClient === false) {
-          return new SiLinClient();
-        }
+        // if (this instanceof SiLinClient === false) {
+        //   return new SiLinClient();
+        // }
         // EventEmitter.call(this);
         this.eventObject = jQuery({});
         // this.messageUtil = new MessageUtil('clientId');

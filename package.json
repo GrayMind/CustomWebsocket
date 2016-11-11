@@ -19,6 +19,7 @@
   "homepage": "https://github.com/GrayMind/CustomWebsocket#readme",
   "dependencies": {
     "bytebuffer": "^5.0.1",
-    "protobufjs": "dcodeIO/protobuf.js"
+    "protobufjs": "dcodeIO/protobuf.js",
+    "ws": "^1.1.1"
   }
 }

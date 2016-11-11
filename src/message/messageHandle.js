@@ -19,6 +19,17 @@
     }
 })(this, function() {
 
+    var messageEnum = new MessageEnum();
+    var PacketProtocol = messageEnum.PacketProtocol,
+        NetworkStatus = messageEnum.NetworkStatus,
+        IMMessageProtocol = messageEnum.IMMessageProtocol,
+        SessionType = messageEnum.SessionType,
+        MessageType = messageEnum.MessageType,
+        OnlineStatus = messageEnum.OnlineStatus,
+        MessageDirection = messageEnum.MessageDirection,
+        MessageSentStatus = messageEnum.MessageSentStatus,
+        ConnectionStatus = messageEnum.ConnectionStatus;
+
     var MessageHandle = function(address ,clientId) {
         // EventEmitter.call(this);
         this.eventObject = jQuery({});
@@ -44,10 +55,12 @@
             maxReconnectAttempts: 3
         });
         socket.onopen = function() {
+            console.log('socket.onopen');
             self.eventObject.trigger('connectionStatus', [ConnectionStatus.CONNECTED]);
             self._sendHandShake();
         };
         socket.onclose = function() {
+            console.log('socket.onclose');
             self.eventObject.trigger('connectionStatus', [ConnectionStatus.DISCONNECTED]);
             if (self.pingTimer !== null) {
                 clearInterval(self.pingTimer);
@@ -60,6 +73,7 @@
             }
         };
         socket.onmessage = function(evt) {
+            console.log('socket.onmessage');
             var message = self.messageUtil.decodeMessage(evt.data);
             self._receiveMessage(message);
         };
@@ -105,9 +119,10 @@
             if (!content.result) {
                 console.log('HandShake result error: ' + content.error);
             } else {
-                this.pingTimer = setInterval(this.sendRequestPing, 60000);
-                setTimeout(this.checkSendMessageQuene, 2000);
-                setTimeout(this.checkReceiveMessageQuene, 2000);
+                this._sendRequestPing();
+                this.pingTimer = setInterval(this._sendRequestPing.bind(this), 30000);
+                setTimeout(this._checkSendMessageQuene, 2000);
+                setTimeout(this._checkReceiveMessageQuene, 2000);
             }
         }
 
@@ -174,16 +189,24 @@
     // 发送握手请求
     MessageHandle.prototype._sendHandShake = function() {
         if (this.socket.readyState == WebSocket.OPEN) {
+            console.log('_sendHandShake');
             var packet = this.messageUtil.buildHandShakeMessage();
+            console.log(packet);
             this.socket.send(this.messageUtil.encodeMessage(packet));
         }
     };
 
     // 发送心跳
     MessageHandle.prototype._sendRequestPing = function() {
+        console.log('_sendRequestPing');
+        console.log('this.messageUtil');
+        console.log(this);
+        console.log(this.messageUtil);
+        console.log(this.lastReceivePongTime);
         var packet = this.messageUtil.buildPingRequestMessage();
+        console.log(packet);
         var now = new Date().getTime();
-        if (this.lastReceivePongTime !== 0 && now - this.lastReceivePongTime > 60000 * 2) {
+        if (this.lastReceivePongTime !== 0 && now - this.lastReceivePongTime > 30000 * 2) {
             this.eventObject.trigger('connectionStatus', [ConnectionStatus.CONNECTING]);
             this.socket.refresh();
         } else {

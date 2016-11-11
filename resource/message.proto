@@ -86,3 +86,12 @@ message KeFuOnlineStatusResponse {
 message KickNotify {
     required int32 action = 1;
 }
+
+//创建session
+message CreateSessionRequest {
+    required string fromeUser = 1;
+}
+message CreateSessionResponse {
+    required string sessionGuid = 1;
+    required string toUser = 2;
+}

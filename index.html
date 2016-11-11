@@ -97,7 +97,15 @@
 </body>
 
 <script type="text/javascript">
-    var client = new SiLinClient();
+    //ws://192.168.1.112:27960/ws
+    var client = new SiLinClient('ws://60.205.232.177:80/ws');
+
+    client.setConnectionStatusListener({
+        onChanged: function(status) {
+            console.log('onChanged status ' + status);
+        }
+    });
+
 </script>
 
 </html>
