@@ -21,7 +21,7 @@
 
     var MessageHandle = function(address ,clientId) {
         // EventEmitter.call(this);
-        var eventObject = jQuery({});
+        this.eventObject = jQuery({});
 
         this.messageUtil = new MessageUtil(clientId);
 
@@ -44,11 +44,11 @@
             maxReconnectAttempts: 3
         });
         socket.onopen = function() {
-            eventObject.trigger('connectionStatus', [ConnectionStatus.CONNECTED]);
+            self.eventObject.trigger('connectionStatus', [ConnectionStatus.CONNECTED]);
             self._sendHandShake();
         };
         socket.onclose = function() {
-            eventObject.trigger('connectionStatus', [ConnectionStatus.DISCONNECTED]);
+            self.eventObject.trigger('connectionStatus', [ConnectionStatus.DISCONNECTED]);
             if (self.pingTimer !== null) {
                 clearInterval(self.pingTimer);
             }
@@ -149,7 +149,7 @@
                 }
                 this._sendMessageNotifyAck(messageUid, messageId);
 
-                eventObject.trigger('receive', [packet]);
+                this.eventObject.trigger('receive', [packet]);
 
             } else if (messageProtocol == 5) {
                 console.log('Received IM notifyAckAck\n 服务器通知B，我收到你的回应了');
@@ -184,7 +184,7 @@
         var packet = this.messageUtil.buildPingRequestMessage();
         var now = new Date().getTime();
         if (this.lastReceivePongTime !== 0 && now - this.lastReceivePongTime > 60000 * 2) {
-            eventObject.trigger('connectionStatus', [ConnectionStatus.CONNECTING]);
+            this.eventObject.trigger('connectionStatus', [ConnectionStatus.CONNECTING]);
             this.socket.refresh();
         } else {
             this.socket.send(this.messageUtil.encodeMessage(packet));
@@ -212,7 +212,7 @@
                         if (message.count >= 4) {
                             deleteKey.push(key);
                             // console.log('消息发送失败：' + key);
-                            eventObject.trigger('sendFail', [message.packet]);
+                            this.eventObject.trigger('sendFail', [message.packet]);
                         } else {
                             message.count++;
                             message.status = 0;
@@ -227,7 +227,7 @@
                         if (message.count >= 4) {
                             deleteKey.push(key);
                             console.log('消息发送失败：' + key);
-                            eventObject.trigger('sendFail', [message.packet]);
+                            this.eventObject.trigger('sendFail', [message.packet]);
                         } else {
                             message.count++;
                             message.status = 0;
@@ -239,7 +239,7 @@
                     }
                 } else if (status === 3) {
                     console.log('消息发送成功：' + key);
-                    eventObject.trigger('sendSuccess', [message.packet]);
+                    this.eventObject.trigger('sendSuccess', [message.packet]);
                     deleteKey.push(key);
                 }
             }
@@ -283,6 +283,11 @@
         }
         setTimeout(this._checkReceiveMessageQuene, 2000);
     };
+
+    MessageHandle.prototype.on = function (type, fn) {
+        this.eventObject.bind(type, fn);
+    };
+
     return MessageHandle;
 });
 

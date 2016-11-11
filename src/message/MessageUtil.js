@@ -28,25 +28,26 @@
         ConnectionStatus = messageEnum.ConnectionStatus;
 
 
-    // MessageEnum
+    if (typeof dcodeIO === 'undefined' || !dcodeIO.ProtoBuf) {
+        throw (new Error("ProtoBuf.js is not present. Please see www/index.html for manual setup instructions."));
+    }
     // Initialize ProtoBuf.js
     var ProtoBuf = dcodeIO.ProtoBuf;
-
-    var Packet = ProtoBuf.loadProtoFile("./packet.proto").build("Packet");
+    var Packet = ProtoBuf.loadProtoFile("/resource/packet.proto").build("Packet");
     //握手
-    var HandShakeProto = ProtoBuf.loadProtoFile("./handshake.proto");
+    var HandShakeProto = ProtoBuf.loadProtoFile("/resource/handshake.proto");
     var HandShakeRequest = HandShakeProto.build("HandShakeRequest");
     var HandShakeResponse = HandShakeProto.build("HandShakeResponse");
 
     // 心跳
-    var HeartbeatProto = ProtoBuf.loadProtoFile("./heartbeat.proto");
+    var HeartbeatProto = ProtoBuf.loadProtoFile("resource/heartbeat.proto");
     // 心跳回应
     var PingResponse = HeartbeatProto.build("PingResponse");
     // 心跳请求
     var PingRequest = HeartbeatProto.build("PingRequest");
 
     // IM 消息
-    var MessageProto = ProtoBuf.loadProtoFile("./message.proto");
+    var MessageProto = ProtoBuf.loadProtoFile("resource/message.proto");
     var IMessage = MessageProto.build("IMessage");
 
     // A发送消息给服务器 1 40

@@ -37,15 +37,16 @@
         ConnectionStatus = messageEnum.ConnectionStatus;
 
     function SiLinClient(address) {
-        if (this instanceof SiLinWebSocket === false) {
+        if (this instanceof SiLinClient === false) {
           return new SiLinClient();
         }
-        EventEmitter.call(this);
+        // EventEmitter.call(this);
+        this.eventObject = jQuery({});
         // this.messageUtil = new MessageUtil('clientId');
         this.messageHandle = new MessageHandle(address, '123456');
     }
 
-    util.inherits(SiLinWebSocket, EventEmitter);
+    // util.inherits(SiLinWebSocket, EventEmitter);
 
     // 获取当前用户信息
     SiLinClient.prototype.getUserInfo = function () {
@@ -75,7 +76,13 @@
 
     // 发送消息
     SiLinClient.prototype.sendMessage = function (message, callback) {
-
+        this.messageHandle.sendMessage();
+        this.messageHandle.on('sendFail', function(message) {
+            callback.onError(message);
+        });
+        this.messageHandle.on('sendSuccess', function(message) {
+            callback.onSuccess(message);
+        });
     };
 
     // 获取指定消息
@@ -91,6 +98,10 @@
     // 获取会话列表
     SiLinClient.prototype.getSecessionList = function () {
 
+    };
+
+    SiLinClient.prototype.on = function (type, fn) {
+        this.eventObject.bind(type, fn);
     };
 
     return SiLinClient;
