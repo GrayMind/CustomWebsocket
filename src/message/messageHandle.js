@@ -30,12 +30,12 @@
         MessageSentStatus = messageEnum.MessageSentStatus,
         ConnectionStatus = messageEnum.ConnectionStatus;
 
-    var MessageHandle = function(address ,clientId) {
+    var MessageHandle = function(address ,clientId, token) {
         // EventEmitter.call(this);
         this.eventObject = jQuery({});
 
         this.messageUtil = new MessageUtil(clientId);
-
+        this.userToken = token;
         this.clientId = clientId;
         this.receiveMessageQuene = {};
         this.sendMessageQuene = {};
@@ -84,7 +84,18 @@
 
     };
 
+    MessageHandle.prototype.on = function (type, fn) {
+        this.eventObject.bind(type, fn);
+    };
     // util.inherits(SiLinWebSocket, EventEmitter);
+
+    MessageHandle.prototype.onlineChange = function (fromeUser, status) {
+        console.log('onlineChange');
+        var packet = this.messageUtil.buildOnlineStatusMessage('', fromeUser, status);
+        console.log(packet);
+        console.log('发送 在线状态 request: ');
+        this.socket.send(this.messageUtil.encodeMessage(packet));
+    };
 
     MessageHandle.prototype.sendMessage = function (message){
         console.log('send ' + text);
@@ -120,6 +131,7 @@
                 console.log('HandShake result error: ' + content.error);
             } else {
                 this._sendRequestPing();
+                this.onlineChange(this.userToken ,OnlineStatus.ONLINE);
                 this.pingTimer = setInterval(this._sendRequestPing.bind(this), 30000);
                 setTimeout(this._checkSendMessageQuene, 2000);
                 setTimeout(this._checkReceiveMessageQuene, 2000);
@@ -307,9 +319,7 @@
         setTimeout(this._checkReceiveMessageQuene, 2000);
     };
 
-    MessageHandle.prototype.on = function (type, fn) {
-        this.eventObject.bind(type, fn);
-    };
+
 
     return MessageHandle;
 });

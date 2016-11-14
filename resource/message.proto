@@ -12,7 +12,7 @@ enum Protocol {
 message IMessage {
     required int32 version = 1;
     optional string fromClientId = 2;
-    optional string toClientId = 3;
+    optional string toClientId = 3 [default = ''];
     //1,2,3,4,5,6
     required int32 protocol = 4;
     required bytes content = 5;

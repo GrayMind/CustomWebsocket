@@ -163,7 +163,7 @@
         }
 
         var onlineStatusRequest = {
-            fromeUser: 'ping',
+            fromeUser: fromeUser,
             status: status
         };
 
@@ -174,6 +174,15 @@
             protocol: IMMessageProtocol.ONLINE_STATUS_REQUEST,
             content: onlineStatusRequest
         };
+        if(targetId.length === 0) {
+            iMessage = {
+                version: this.version,
+                fromClientId: this.clientId,
+                protocol: IMMessageProtocol.ONLINE_STATUS_REQUEST,
+                content: onlineStatusRequest
+            };
+        }
+
         var packet = {
             protocol: PacketProtocol.IM,
             security: 0,
@@ -223,9 +232,12 @@
             var iMessage = {};
             iMessage.version = packetContent.version;
             iMessage.fromClientId = packetContent.fromClientId;
-            iMessage.toClientId = packetContent.toClientId;
             iMessage.protocol = packetContent.protocol;
 
+            if (packetContent.toClientId && packetContent.toClientId.length !== 0) {
+                iMessage.toClientId = packetContent.toClientId;
+            }
+            
             var messageContent = packetContent.content;
 
             if (packetContent.protocol ==  IMMessageProtocol.REQUEST) {
@@ -296,8 +308,8 @@
 
             } else if (packetContent.protocol ==  IMMessageProtocol.ONLINE_STATUS_REQUEST) {
                 var onlineReq = {};
-                onlineReq.fromeUser = onlineReq.fromeUser;
-                onlineReq.status = onlineReq.status;
+                onlineReq.fromeUser = messageContent.fromeUser;
+                onlineReq.status = messageContent.status;
 
                 iMessage.content = new KeFuOnlineStatusRequest(onlineReq).encode().toArrayBuffer();
 
@@ -305,8 +317,8 @@
 
             } else if (packetContent.protocol ==  IMMessageProtocol.ONLINE_STATUS_RESPONSE) {
                 var onlineRes = {};
-                onlineRes.respCode = onlineRes.respCode;
-                onlineRes.status = onlineRes.status;
+                onlineRes.respCode = messageContent.respCode;
+                onlineRes.status = messageContent.status;
 
                 iMessage.content = new KeFuOnlineStatusResponse(onlineRes).encode().toArrayBuffer();
 

@@ -121,9 +121,9 @@
 
         //1.online,2.away,3.offline
         var OnlineStatus = {
-            ONLINE : 1,
-            AWAY: 2,
-            OFFLINE: 3
+            ONLINE : '1',
+            AWAY: '2',
+            OFFLINE: '3'
         };
         this.OnlineStatus = OnlineStatus;
 

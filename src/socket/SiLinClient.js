@@ -36,14 +36,14 @@
         MessageSentStatus = messageEnum.MessageSentStatus,
         ConnectionStatus = messageEnum.ConnectionStatus;
 
-    function SiLinClient(address) {
+    function SiLinClient(address, clientId ,token) {
         // if (this instanceof SiLinClient === false) {
         //   return new SiLinClient();
         // }
         // EventEmitter.call(this);
         this.eventObject = jQuery({});
         // this.messageUtil = new MessageUtil('clientId');
-        this.messageHandle = new MessageHandle(address, '123456');
+        this.messageHandle = new MessageHandle(address, clientId, token);
     }
 
     // util.inherits(SiLinWebSocket, EventEmitter);
