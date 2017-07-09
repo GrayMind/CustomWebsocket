@@ -77,6 +77,14 @@
     <div class="top">
         <div class='userinfo'>
             <p>name</p>
+            <div>
+                <!-- //1.online,2.away,3.offline -->
+                在线状态：<select onchange="selectChange(this)">
+                          <option value ="1">online</option>
+                          <option value ="2">away</option>
+                          <option value="3">offline</option>
+                        </select>
+            </div>
         </div>
     </div>
     <div class="bottom">
@@ -85,10 +93,15 @@
         </div>
         <div class="right">
             <div class="right-top">
-
+                1 <br>
+                2 <br>
+                3 <br>
+                4 <br>
+                5 <br>
             </div>
             <div class="right-bottm">
-
+                <textarea id='textinput' name="input" rows="5" cols="40"></textarea>
+                <input type="button" name="sent" value="发送" onclick="sendText()">
             </div>
         </div>
     </div>
@@ -98,14 +111,26 @@
 
 <script type="text/javascript">
     //ws://192.168.1.112:27960/ws
-    var client = new SiLinClient('ws://60.205.232.177:80/ws', '123456', '6802b207eeeedff53752c3f95dd4fe21');
+    // var client = new SiLinClient('ws://60.205.232.177:80/ws', '123456', '6802b207eeeedff53752c3f95dd4fe21');
+    //
+    // client.setConnectionStatusListener({
+    //     onChanged: function(status) {
+    //         console.log('onChanged status ' + status);
+    //     }
+    // });
 
-    client.setConnectionStatusListener({
-        onChanged: function(status) {
-            console.log('onChanged status ' + status);
-        }
-    });
+    // client
 
+    function selectChange(obj) {
+        console.log(obj.value);
+        client.changeOnlineStatus(obj.value);
+    }
+
+    function sendText() {
+
+        console.log($("#textinput").val());
+
+    }
 </script>
 
 </html>

@@ -89,9 +89,9 @@
     };
     // util.inherits(SiLinWebSocket, EventEmitter);
 
-    MessageHandle.prototype.onlineChange = function (fromeUser, status) {
+    MessageHandle.prototype.onlineChange = function (status) {
         console.log('onlineChange');
-        var packet = this.messageUtil.buildOnlineStatusMessage('', fromeUser, status);
+        var packet = this.messageUtil.buildOnlineStatusMessage('', this.userToken, status);
         console.log(packet);
         console.log('发送 在线状态 request: ');
         this.socket.send(this.messageUtil.encodeMessage(packet));

@@ -37,16 +37,11 @@
         ConnectionStatus = messageEnum.ConnectionStatus;
 
     function SiLinClient(address, clientId ,token) {
-        // if (this instanceof SiLinClient === false) {
-        //   return new SiLinClient();
-        // }
-        // EventEmitter.call(this);
+        // this.token = token;
+        // this.clientId =
         this.eventObject = jQuery({});
-        // this.messageUtil = new MessageUtil('clientId');
         this.messageHandle = new MessageHandle(address, clientId, token);
     }
-
-    // util.inherits(SiLinWebSocket, EventEmitter);
 
     // 获取当前用户信息
     SiLinClient.prototype.getUserInfo = function () {
@@ -56,6 +51,10 @@
     // 连接
     SiLinClient.prototype.connect = function () {
 
+    };
+
+    SiLinClient.prototype.changeOnlineStatus = function (status, cb) {
+        this.messageHandle.onlineChange(status);
     };
 
     // 监听连接状态改变
